@@ -37,8 +37,10 @@ class CardsSpider(scrapy.Spider):
     def parse_card (self, response):
 
         name_eng = response.xpath(".//tr/td[text() = 'Name']/following-sibling::td/*/text()").get()
-        name_jap = response.xpath(".//tr/td[text() = 'Japanese']/following-sibling::td/text()").get().replace('\n', '')
-        name_chi = response.xpath(".//tr/td[text() = 'Traditional Chinese']/following-sibling::td/text()").get().replace('\n', '')
+        name_jpn = response.xpath(".//tr/td[text() = 'Japanese']/following-sibling::td/text()").get().replace('\n', '')
+        name_tchn = response.xpath(".//tr/td[text() = 'Traditional Chinese']/following-sibling::td/text()").get().replace('\n', '')
+        name_schn = response.xpath(".//tr/td[text() = 'Simplified Chinese']/following-sibling::td/text()").get().replace('\n', '')
+        name_kor = response.xpath(".//tr/td[text() = 'Korean']/following-sibling::td/text()").get().replace('\n', '')
         colour = response.xpath(".//tr/td[text() = 'Colour']/following-sibling::td/*/text()").getall()
 
         card_type = response.xpath(".//tr/td[text() = 'Card Type']/following-sibling::td/*/text()").get()
@@ -49,7 +51,15 @@ class CardsSpider(scrapy.Spider):
         rarity  = response.xpath(".//tr/td[text() = 'Rarity']/following-sibling::td/*/text()").get()
         evo_conditions = list()
 
-        # evo_con_elements = response.css (".evocon").getall()
+        evo_con_elements = response.css (".evocon")
+        for condition in evo_con_elements:
+            evo_conditions.append (condition.xpath(".//*//text()").getall())
+
+
+        card_effects = response.css(".effect tr")[1].xpath("./td//text()").getall()  
+
+
+        restrictions = response.css (".restricted > tr").xpath("./td//*//text()")
         # evo_con_elements = [i for i in evo_con_elements if '\n' not in i]
 
         # for evo_con in evo_con_elements:
@@ -62,8 +72,10 @@ class CardsSpider(scrapy.Spider):
 
         yield {
             "name_eng": name_eng,
-            "name_jap": name_jap,
-            "name_chi": name_chi,
+            "name_jpn": name_jpn,
+            "name_tchn": name_tchn,
+            "name_schn": name_schn,
+            "name_kor": name_kor,
             "colour": colour,
             "card_type": card_type,
             "level": level,
