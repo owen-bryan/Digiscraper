@@ -11,11 +11,11 @@ class CardsSpider(scrapy.Spider):
             # print(link)
             set_name = link.css ("a::text").extract_first().strip()
             url = link.xpath("@href").extract_first().strip()
-            self.log ("Found set {} at {}".format(set_name, url))
-            yield {
-                "set_name": set_name,
-                "link": url,
-            }
+            # self.log ("Found set {} at {}".format(set_name, url))
+            # yield {
+            #     "set_name": set_name,
+            #     "link": url,
+            # }
 
             yield response.follow (url, self.parse_set)
 
@@ -25,22 +25,22 @@ class CardsSpider(scrapy.Spider):
             url = link.xpath("@href").extract_first().strip()
             card_name = link.xpath ("text()").extract_first().strip()
 
-            self.log ("Found card {} at {}".format(card_name, url))
+            # self.log ("Found card {} at {}".format(card_name, url))
 
-            yield {
-                "card_name": card_name,
-                "link" : url,
-            }
+            # yield {
+            #     "card_name": card_name,
+            #     "link" : url,
+            # }
 
             yield response.follow(url, self.parse_card)
 
     def parse_card (self, response):
 
         name_eng = response.xpath(".//tr/td[text() = 'Name']/following-sibling::td/*/text()").get()
-        name_jpn = response.xpath(".//tr/td[text() = 'Japanese']/following-sibling::td/text()").get().replace('\n', '')
-        name_tchn = response.xpath(".//tr/td[text() = 'Traditional Chinese']/following-sibling::td/text()").get().replace('\n', '')
-        name_schn = response.xpath(".//tr/td[text() = 'Simplified Chinese']/following-sibling::td/text()").get().replace('\n', '')
-        name_kor = response.xpath(".//tr/td[text() = 'Korean']/following-sibling::td/text()").get().replace('\n', '')
+        name_jpn = remove_special_character(response.xpath(".//tr/td[text() = 'Japanese']/following-sibling::td/text()").get())
+        name_tchn = remove_special_character(response.xpath(".//tr/td[text() = 'Traditional Chinese']/following-sibling::td/text()").get())
+        name_schn = remove_special_character(response.xpath(".//tr/td[text() = 'Simplified Chinese']/following-sibling::td/text()").get())
+        name_kor = remove_special_character(response.xpath(".//tr/td[text() = 'Korean']/following-sibling::td/text()").get())
         colour = response.xpath(".//tr/td[text() = 'Colour']/following-sibling::td/*/text()").getall()
 
         card_type = response.xpath(".//tr/td[text() = 'Card Type']/following-sibling::td/*/text()").get()
@@ -56,16 +56,15 @@ class CardsSpider(scrapy.Spider):
             evo_conditions.append (condition.xpath(".//*//text()").getall())
 
 
-        card_effects = response.css(".effect tr")[1].xpath("./td//text()").getall()  
+        # card_effects = response.css(".effect")[1].xpath("./tr/td//text()").getall()  
 
 
-        restrictions = response.css (".restricted > tr").xpath("./td//*//text()")
-        # evo_con_elements = [i for i in evo_con_elements if '\n' not in i]
+        restrictions = dict()
 
-        # for evo_con in evo_con_elements:
-        #     evo_colour = evo_con.css ("tbody > tr > td")
-
-        #     evo_conditions.append({"colour": })
+        restrictions["eng"] = response.xpath("//th[contains(text(), 'English')]/following-sibling::td//text()").get()
+        restrictions["jpn"] = response.xpath("//th[contains(text(), 'Japanese')]/following-sibling::td//text()").get()
+        restrictions["chn"] = response.xpath("//th[contains(text(), 'Chinese')]/following-sibling::td//text()").get()
+        restrictions["kor"] = response.xpath("//th[contains(text(), 'Korean')]/following-sibling::td//text()").get()
 
 
         self.log ("Parsing card {} with id {}".format(name_eng, 0 ))
@@ -82,9 +81,16 @@ class CardsSpider(scrapy.Spider):
             "form": form,
             "type": type,
             "rarity": rarity,
+            "evo_conditions": evo_conditions,
+            "restrictions": restrictions,
         }
         
 
         
+def remove_special_character (item):
 
+    if item is not None:
+        return item.replace ('\n', '')
+
+    return item
              
