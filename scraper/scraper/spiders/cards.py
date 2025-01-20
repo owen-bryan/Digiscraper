@@ -59,12 +59,14 @@ class CardsSpider(scrapy.Spider):
         card_effects = response.css(".info-extra > .effect").xpath(".//td//text()").getall()  
         inherited_effects = None
 
-        if card_effects is not None:
-            if (len(card_effects) >= 2):
-                card_effects = ' '.join(card_effects[0]).strip()
-                inherited_effects = ' '.join(card_effects[1]).strip()
-            else:
-                card_effects = ' '.join(card_effects).strip()
+        self.log (card_effects)
+
+        # if card_effects is not None:
+        #     if (len(card_effects) >= 2):
+        #         card_effects = ' '.join(card_effects[0]).strip()
+        #         inherited_effects = ' '.join(card_effects[1]).strip()
+        #     else:
+        #         card_effects = ' '.join(card_effects).strip()
 
         restrictions = dict()
 
@@ -74,7 +76,7 @@ class CardsSpider(scrapy.Spider):
         restrictions["kor"] = response.xpath("//th[contains(text(), 'Korean')]/following-sibling::td/a/text()").get()
 
 
-        self.log ("Parsing card {} with id {}".format(name_eng, 0 ))
+        self.log ("Parsing card {} with id {}".format(name_eng, card_id ))
 
         yield {
             "card_id": card_id,
@@ -93,7 +95,37 @@ class CardsSpider(scrapy.Spider):
             "restrictions": restrictions,
             "card_effect" : card_effects,
             "inherited_effect": inherited_effects,
+            # "art": card_art,
+            # "errata" : response.follw ("", self.parse_errata),
+            # "rulings" : response.follow ("", self.parse_rulings),
         }
+
+        yield response.follow (response.url + "/Gallery", self.parse_art_urls)
+
+    def parse_art_urls (self, response):
+        
+        result = dict()
+
+        eng_art = extract_img_url(response.xpath("//div[@id='gallery-0']//img/@src").getall())
+        jpn_art = extract_img_url(response.xpath("//div[@id='gallery-1']//img/@src").getall())
+        chn_art = extract_img_url(response.xpath("//div[@id='gallery-2']//img/@src").getall())
+        kor_art = extract_img_url(response.xpath("//div[@id='gallery-3']//img/@src").getall())
+
+
+
+        if eng_art is not None:
+            result ["eng"] = eng_art
+        if jpn_art is not None:
+            result ["jpn"] = jpn_art
+        if chn_art is not None:
+            result ["chn"] = chn_art
+        if kor_art is not None:
+            result ["kor"] = kor_art
+
+        return result
+
+    
+    
         
 
         
@@ -104,3 +136,11 @@ def remove_newline_character (item):
 
     return item
              
+def extract_img_url  (raw_img_url):
+    result = list()
+    for url in raw_img_url:
+        result.append(url.split("revision")[0])
+
+    return result
+        
+        
