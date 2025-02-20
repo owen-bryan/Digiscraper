@@ -20,14 +20,14 @@ NEWSPIDER_MODULE = "scraper.spiders"
 ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
 #DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
@@ -66,9 +66,9 @@ ROBOTSTXT_OBEY = True
 #    "scraper.pipelines.ScraperPipeline": 300,
 #}
 
-ITEM_PIPELINES = {"scrapy.pipelines.files.FilesPipeline": 1}
+ITEM_PIPELINES = {"scrapy.pipelines.images.ImagesPipeline": 1}
 
-FILES_STORE = "images"
+IMAGES_STORE = "images"
 
 MEDIA_ALLOW_REDIRECTS = True
 
@@ -102,4 +102,11 @@ FEED_EXPORT_ENCODING = "utf-8"
 # Retry settings
 RETRY_ENABLED = True
 RETRY_TIMES = 5  # Number of retries for failed requests
-DOWNLOAD_TIMEOUT = 15  # Timeout for download requests
+DOWNLOAD_TIMEOUT = 60  # Timeout for download request
+
+DOWNLOAD_MAXSIZE = 10*1024*1024
+
+
+IMAGES_THUMBS = {
+    'small': (50, 50),  # This is just an example, you may have other sizes
+}

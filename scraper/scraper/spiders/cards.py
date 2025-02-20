@@ -114,16 +114,16 @@ class CardsSpider(scrapy.Spider):
             result = list()
             for url in raw_img_url:
                 if url.find("data:image") == -1:
-                    result.append(url)
+                    result.append(url.split("/revision/")[0])
 
             return result
 
         result = dict()
 
         eng_art_url = extract_img_url(response.xpath("//div[@id='gallery-0']//img/@src").getall())
-        jpn_art_url = extract_img_url(response.xpath("//div[@id='gallery-1']//img/@src").getall())
-        chn_art_url = extract_img_url(response.xpath("//div[@id='gallery-2']//img/@src").getall())
-        kor_art_url = extract_img_url(response.xpath("//div[@id='gallery-3']//img/@src").getall())
+        # jpn_art_url = extract_img_url(response.xpath("//div[@id='gallery-1']//img/@src").getall())
+        # chn_art_url = extract_img_url(response.xpath("//div[@id='gallery-2']//img/@src").getall())
+        # kor_art_url = extract_img_url(response.xpath("//div[@id='gallery-3']//img/@src").getall())
 
 
         # eng_art_url = extract_img_url(response.xpath("//div[@id='gallery-0']//a[@class='image lightbox']/@href").getall())
@@ -132,32 +132,32 @@ class CardsSpider(scrapy.Spider):
         # kor_art_url = extract_img_url(response.xpath("//div[@id='gallery-3']//a[@class='image lightbox']/@href").getall())
 
 
-        eng_art_key = response.xpath("//div[@id='gallery-0']//img/@data-image-key").getall()
-        jpn_art_key = response.xpath("//div[@id='gallery-1']//img/@data-image-key").getall()
-        chn_art_key = response.xpath("//div[@id='gallery-2']//img/@data-image-key").getall()
-        kor_art_key = response.xpath("//div[@id='gallery-3']//img/@data-image-key").getall()
+        # eng_art_key = response.xpath("//div[@id='gallery-0']//img/@data-image-key").getall()
+        # jpn_art_key = response.xpath("//div[@id='gallery-1']//img/@data-image-key").getall()
+        # chn_art_key = response.xpath("//div[@id='gallery-2']//img/@data-image-key").getall()
+        # kor_art_key = response.xpath("//div[@id='gallery-3']//img/@data-image-key").getall()
 
         if eng_art_url is not None:
             # result ["eng"] = list(zip (eng_art_url, eng_art_key))
-            yield {"file_urls": eng_art_url}
+            yield {"image_urls": eng_art_url}
             
             # for image_url in eng_art_url:
             #     yield {"file_urls": [image_url]}
-        if jpn_art_url is not None:
-            result ["jpn"] = list(zip (jpn_art_url, jpn_art_key))
-            yield {"file_urls": jpn_art_url}
-            # for image_url in jpn_art_url:
-            #     yield {"file_urls": [image_url]}
-        if chn_art_url is not None:
-            result ["chn"] = list(zip (chn_art_url, chn_art_key))
-            yield {"file_urls": chn_art_url}
-            # for image_url in chn_art_url:
-            #     yield {"file_urls": [image_url]}
-        if kor_art_url is not None:
-            result ["kor"] = list(zip (kor_art_url, kor_art_key))
-            yield {"file_urls": kor_art_url}
-            # for image_url in jpn_art_url:
-            #     yield {"file_urls": [image_url]}
+        # if jpn_art_url is not None:
+        #     result ["jpn"] = list(zip (jpn_art_url, jpn_art_key))
+        #     yield {"file_urls": jpn_art_url}
+        #     # for image_url in jpn_art_url:
+        #     #     yield {"file_urls": [image_url]}
+        # if chn_art_url is not None:
+        #     result ["chn"] = list(zip (chn_art_url, chn_art_key))
+        #     yield {"file_urls": chn_art_url}
+        #     # for image_url in chn_art_url:
+        #     #     yield {"file_urls": [image_url]}
+        # if kor_art_url is not None:
+        #     result ["kor"] = list(zip (kor_art_url, kor_art_key))
+        #     yield {"file_urls": kor_art_url}
+        #     # for image_url in jpn_art_url:
+        #     #     yield {"file_urls": [image_url]}
 
         # yield result
 
