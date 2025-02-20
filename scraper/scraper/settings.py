@@ -66,6 +66,12 @@ ROBOTSTXT_OBEY = True
 #    "scraper.pipelines.ScraperPipeline": 300,
 #}
 
+ITEM_PIPELINES = {"scrapy.pipelines.files.FilesPipeline": 1}
+
+FILES_STORE = "images"
+
+MEDIA_ALLOW_REDIRECTS = True
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 AUTOTHROTTLE_ENABLED = True
@@ -91,3 +97,9 @@ AUTOTHROTTLE_MAX_DELAY = 5
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+
+# Retry settings
+RETRY_ENABLED = True
+RETRY_TIMES = 5  # Number of retries for failed requests
+DOWNLOAD_TIMEOUT = 15  # Timeout for download requests

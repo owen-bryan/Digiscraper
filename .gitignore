@@ -2,3 +2,4 @@ venv
 /scraper/log.txt
 /scraper/results.json
 launch.json
+*/images

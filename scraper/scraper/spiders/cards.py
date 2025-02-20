@@ -3,7 +3,7 @@ import scrapy
 
 class CardsSpider(scrapy.Spider):
     name = "cards"
-    allowed_domains = ["digimoncardgame.fandom.com"]
+    # allowed_domains = ["digimoncardgame.fandom.com"]
     start_urls = ["https://digimoncardgame.fandom.com/wiki/Booster_Packs"]
 
     def parse(self, response):
@@ -35,6 +35,13 @@ class CardsSpider(scrapy.Spider):
             yield response.follow(url, self.parse_card)
 
     def parse_card (self, response):
+        def remove_newline_character (item):
+            if item is not None:
+                return item.replace ('\n', '')
+
+            return item
+
+
         card_id = response.css(".cardno::text").get().replace('(', '').replace(')', '')
         name_eng = response.xpath(".//tr/td[text() = 'Name']/following-sibling::td/*/text()").get()
         name_jpn = remove_newline_character(response.xpath(".//tr/td[text() = 'Japanese']/following-sibling::td/text()").get())
@@ -103,44 +110,64 @@ class CardsSpider(scrapy.Spider):
         yield response.follow (response.url + "/Gallery", self.parse_art_urls)
 
     def parse_art_urls (self, response):
-        
+        def extract_img_url  (raw_img_url):
+            result = list()
+            for url in raw_img_url:
+                if url.find("data:image") == -1:
+                    result.append(url)
+
+            return result
+
         result = dict()
 
-        eng_art = extract_img_url(response.xpath("//div[@id='gallery-0']//img/@src").getall())
-        jpn_art = extract_img_url(response.xpath("//div[@id='gallery-1']//img/@src").getall())
-        chn_art = extract_img_url(response.xpath("//div[@id='gallery-2']//img/@src").getall())
-        kor_art = extract_img_url(response.xpath("//div[@id='gallery-3']//img/@src").getall())
+        eng_art_url = extract_img_url(response.xpath("//div[@id='gallery-0']//img/@src").getall())
+        jpn_art_url = extract_img_url(response.xpath("//div[@id='gallery-1']//img/@src").getall())
+        chn_art_url = extract_img_url(response.xpath("//div[@id='gallery-2']//img/@src").getall())
+        kor_art_url = extract_img_url(response.xpath("//div[@id='gallery-3']//img/@src").getall())
 
 
+        # eng_art_url = extract_img_url(response.xpath("//div[@id='gallery-0']//a[@class='image lightbox']/@href").getall())
+        # jpn_art_url = extract_img_url(response.xpath("//div[@id='gallery-1']//a[@class='image lightbox']/@href").getall())
+        # chn_art_url = extract_img_url(response.xpath("//div[@id='gallery-2']//a[@class='image lightbox']/@href").getall())
+        # kor_art_url = extract_img_url(response.xpath("//div[@id='gallery-3']//a[@class='image lightbox']/@href").getall())
 
-        if eng_art is not None:
-            result ["eng"] = eng_art
-        if jpn_art is not None:
-            result ["jpn"] = jpn_art
-        if chn_art is not None:
-            result ["chn"] = chn_art
-        if kor_art is not None:
-            result ["kor"] = kor_art
 
-        return result
+        eng_art_key = response.xpath("//div[@id='gallery-0']//img/@data-image-key").getall()
+        jpn_art_key = response.xpath("//div[@id='gallery-1']//img/@data-image-key").getall()
+        chn_art_key = response.xpath("//div[@id='gallery-2']//img/@data-image-key").getall()
+        kor_art_key = response.xpath("//div[@id='gallery-3']//img/@data-image-key").getall()
+
+        if eng_art_url is not None:
+            # result ["eng"] = list(zip (eng_art_url, eng_art_key))
+            yield {"file_urls": eng_art_url}
+            
+            # for image_url in eng_art_url:
+            #     yield {"file_urls": [image_url]}
+        if jpn_art_url is not None:
+            result ["jpn"] = list(zip (jpn_art_url, jpn_art_key))
+            yield {"file_urls": jpn_art_url}
+            # for image_url in jpn_art_url:
+            #     yield {"file_urls": [image_url]}
+        if chn_art_url is not None:
+            result ["chn"] = list(zip (chn_art_url, chn_art_key))
+            yield {"file_urls": chn_art_url}
+            # for image_url in chn_art_url:
+            #     yield {"file_urls": [image_url]}
+        if kor_art_url is not None:
+            result ["kor"] = list(zip (kor_art_url, kor_art_key))
+            yield {"file_urls": kor_art_url}
+            # for image_url in jpn_art_url:
+            #     yield {"file_urls": [image_url]}
+
+        # yield result
 
     
     
         
 
         
-def remove_newline_character (item):
 
-    if item is not None:
-        return item.replace ('\n', '')
-
-    return item
              
-def extract_img_url  (raw_img_url):
-    result = list()
-    for url in raw_img_url:
-        result.append(url.split("revision")[0])
 
-    return result
         
         
