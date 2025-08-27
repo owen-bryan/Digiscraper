@@ -6,7 +6,7 @@ class CardArtSpider (scrapy.Spider):
 
     def __init__(self, url=None, *args, **kwargs):
         super(CardArtSpider, self).__init__(*args, **kwargs)
-        self.start_urls = [f"https://digimoncardgame.fandom.com{url}"]
+        self.start_urls = [f"https://digimoncardgame.fandom.com{url}/Gallery"]
 
 
     def parse (self, response):
@@ -35,7 +35,7 @@ class CardArtSpider (scrapy.Spider):
 
         if eng_art_url is not None:
             # result ["eng"] = list(zip (eng_art_url, eng_art_key))
-            yield {"image_urls": eng_art_url}
+            yield {"image_urls": eng_art_url, "id": self.card_id}
             
             # for image_url in eng_art_url:
             #     yield {"file_urls": [image_url]}

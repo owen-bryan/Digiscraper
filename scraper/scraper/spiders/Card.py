@@ -7,39 +7,39 @@ class CardSpider (scrapy.Spider):
         self.start_urls = [f"https://digimoncardgame.fandom.com{url}"]
 
 
+    def remove_newline_character (self, item):
+        if item is not None:
+            return item.replace ('\n', '').strip()
+        return item
+    
+
     def parse (self, response):
-        def remove_newline_character (item):
-            if item is not None:
-                return item.replace ('\n', '')
-
-            return item
-
-
         card_id = response.css(".cardno::text").get().replace('(', '').replace(')', '')
         name_eng = response.xpath(".//tr/td[text() = 'Name']/following-sibling::td/*/text()").get()
-        name_jpn = remove_newline_character(response.xpath(".//tr/td[text() = 'Japanese']/following-sibling::td/text()").get())
-        name_tchn = remove_newline_character(response.xpath(".//tr/td[text() = 'Traditional Chinese']/following-sibling::td/text()").get())
-        name_schn = remove_newline_character(response.xpath(".//tr/td[text() = 'Simplified Chinese']/following-sibling::td/text()").get())
-        name_kor = remove_newline_character(response.xpath(".//tr/td[text() = 'Korean']/following-sibling::td/text()").get())
-        colour = response.xpath(".//div[@class='info-main']//td[text() = 'Colour']/following-sibling::td//a//text()").getall()
 
-        card_type = response.xpath(".//tr/td[text() = 'Card Type']/following-sibling::td/*/text()").get()
+        # name_jpn = self.remove_newline_character(response.xpath(".//tr/td[text() = 'Japanese']/following-sibling::td/text()").get())
+        # name_tchn = self.remove_newline_character(response.xpath(".//tr/td[text() = 'Traditional Chinese']/following-sibling::td/text()").get())
+        # name_schn = self.remove_newline_character(response.xpath(".//tr/td[text() = 'Simplified Chinese']/following-sibling::td/text()").get())
+        # name_kor = self.remove_newline_character(response.xpath(".//tr/td[text() = 'Korean']/following-sibling::td/text()").get())
+        # colour = response.xpath(".//div[@class='info-main']//td[text() = 'Colour']/following-sibling::td//a//text()").getall()
 
-        level = response.xpath(".//tr/td[text() = 'Level']/following-sibling::td/*/text()").get()
-        form = response.xpath(".//tr/td[text() = 'Form']/following-sibling::td/*/text()").get()
-        type = response.xpath(".//tr/td[text() = 'Type']/following-sibling::td/*/text()").getall()
-        rarity  = response.xpath(".//tr/td[text() = 'Rarity']/following-sibling::td/*/text()").get()
-        evo_conditions = list()
+        # card_type = response.xpath(".//tr/td[text() = 'Card Type']/following-sibling::td/*/text()").get()
 
-        evo_con_elements = response.css (".evocon")
-        for condition in evo_con_elements:
-            evo_conditions.append (condition.xpath(".//*//text()").getall())
+        # level = response.xpath(".//tr/td[text() = 'Level']/following-sibling::td/*/text()").get()
+        # form = response.xpath(".//tr/td[text() = 'Form']/following-sibling::td/*/text()").get()
+        # type = response.xpath(".//tr/td[text() = 'Type']/following-sibling::td/*/text()").getall()
+        # rarity  = response.xpath(".//tr/td[text() = 'Rarity']/following-sibling::td/*/text()").get()
+        # evo_conditions = list()
+
+        # evo_con_elements = response.css (".evocon")
+        # for condition in evo_con_elements:
+        #     evo_conditions.append (condition.xpath(".//*//text()").getall())
 
 
-        card_effects = response.css(".info-extra > .effect").xpath(".//td//text()").getall()  
-        inherited_effects = None
+        # card_effects = response.css(".info-extra > .effect").xpath(".//td//text()").getall()  
+        # inherited_effects = None
 
-        # self.log (card_effects)
+        # # self.log (card_effects)
 
         # if card_effects is not None:
         #     if (len(card_effects) >= 2):
@@ -48,34 +48,31 @@ class CardSpider (scrapy.Spider):
         #     else:
         #         card_effects = ' '.join(card_effects).strip()
 
-        restrictions = dict()
+        # restrictions = dict()
 
-        restrictions["eng"] = response.xpath("//th[contains(text(), 'English')]/following-sibling::td/a/text()").get()
-        restrictions["jpn"] = response.xpath("//th[contains(text(), 'Japanese')]/following-sibling::td/a/text()").get()
-        restrictions["chn"] = response.xpath("//th[contains(text(), 'Chinese')]/following-sibling::td/a/text()").get()
-        restrictions["kor"] = response.xpath("//th[contains(text(), 'Korean')]/following-sibling::td/a/text()").get()
+        # restrictions["eng"] = response.xpath("//th[contains(text(), 'English')]/following-sibling::td/a/text()").get()
+        # restrictions["jpn"] = response.xpath("//th[contains(text(), 'Japanese')]/following-sibling::td/a/text()").get()
+        # restrictions["chn"] = response.xpath("//th[contains(text(), 'Chinese')]/following-sibling::td/a/text()").get()
+        # restrictions["kor"] = response.xpath("//th[contains(text(), 'Korean')]/following-sibling::td/a/text()").get()
 
 
-        self.log ("Parsing card {} with id {}".format(name_eng, card_id ))
+        # self.log ("Parsing card {} with id {}".format(name_eng, card_id ))
 
         yield {
             "card_id": card_id,
             "name_eng": name_eng,
-            "name_jpn": name_jpn,
-            "name_tchn": name_tchn,
-            "name_schn": name_schn,
-            "name_kor": name_kor,
-            "colour": colour,
-            "card_type": card_type,
-            "level": level,
-            "form": form,
-            "type": type,
-            "rarity": rarity,
-            "evo_conditions": evo_conditions,
-            "restrictions": restrictions,
-            "card_effect" : card_effects,
-            "inherited_effect": inherited_effects,
-            # "art": card_art,
-            # "errata" : response.follw ("", self.parse_errata),
-            # "rulings" : response.follow ("", self.parse_rulings),
+            # "name_jpn": name_jpn,
+            # "name_tchn": name_tchn,
+            # "name_schn": name_schn,
+            # "name_kor": name_kor,
+            # "colour": colour,
+            # "card_type": card_type,
+            # "level": level,
+            # "form": form,
+            # "type": type,
+            # "rarity": rarity,
+            # "evo_conditions": evo_conditions,
+            # "restrictions": restrictions,
+            # "card_effect" : card_effects,
+            # "inherited_effect": inherited_effects,
         }

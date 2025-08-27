@@ -27,5 +27,3 @@ class CardLinksSpider(scrapy.Spider):
                 "card_name": card_name,
                 "link" : url,
             }
-
-            # yield response.follow(url, self.parse_card)

@@ -9,7 +9,6 @@ class SetLinksSpider(scrapy.Spider):
 
     def parse(self, response):
         for link in response.xpath("//tr[@class=\"{{{bodyclass}}}\"]//a"):
-            # print(link)
             set_name = link.css ("a::text").extract_first().strip()
             url = link.xpath("@href").extract_first().strip()
             # self.log ("Found set {} at {}".format(set_name, url))
@@ -18,7 +17,6 @@ class SetLinksSpider(scrapy.Spider):
                 "link": url,
             }
 
-            # yield response.follow (url, self.parse_set)
 
     
     

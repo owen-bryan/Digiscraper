@@ -1,5 +1,8 @@
 venv
-/scraper/log.txt
-/scraper/results.json
 launch.json
 */images
+
+*.json
+*__pycache__
+*GET_CARD*.py
+*GET_LINKS.py
