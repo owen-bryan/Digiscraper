@@ -5,9 +5,11 @@ class CardLinksSpider(scrapy.Spider):
     # allowed_domains = ["digimoncardgame.fandom.com"]
     # start_urls = ["https://digimoncardgame.fandom.com/wiki/Booster_Packs"]
     
-    def __init__(self, url=None, *args, **kwargs):
+    def __init__(self, url=None, set_name = None, set_id= None, *args, **kwargs):
         super(CardLinksSpider, self).__init__(*args, **kwargs)
         self.start_urls = [f"https://digimoncardgame.fandom.com{url}"]
+        self.set_name = set_name
+        self.set_id = set_id
 
     # async def start (self):
     #     self.log ("Start called")
@@ -26,4 +28,6 @@ class CardLinksSpider(scrapy.Spider):
             yield {
                 "card_name": card_name,
                 "link" : url,
+                "set_name": self.set_name,
+                "set_id": self.set_id
             }

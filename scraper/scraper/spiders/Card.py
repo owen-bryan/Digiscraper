@@ -2,9 +2,11 @@ import scrapy
 
 class CardSpider (scrapy.Spider):
     name = "card"
-    def __init__(self, url=None, *args, **kwargs):
+    def __init__(self, url=None, set_id = None, set_name = None, *args, **kwargs):
         super(CardSpider, self).__init__(*args, **kwargs)
         self.start_urls = [f"https://digimoncardgame.fandom.com{url}"]
+        self.set_name = set_name
+        self.set_id = set_id
 
 
     def remove_newline_character (self, item):
@@ -61,6 +63,8 @@ class CardSpider (scrapy.Spider):
         yield {
             "card_id": card_id,
             "name_eng": name_eng,
+            "set_id": self.set_id,
+            "set_name": self.set_name,
             # "name_jpn": name_jpn,
             # "name_tchn": name_tchn,
             # "name_schn": name_schn,

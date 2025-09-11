@@ -4,9 +4,11 @@ class CardArtSpider (scrapy.Spider):
 
     name = "card_art"
 
-    def __init__(self, url=None, *args, **kwargs):
+    def __init__(self, url=None, card_id = None, set_number = None, *args, **kwargs):
         super(CardArtSpider, self).__init__(*args, **kwargs)
         self.start_urls = [f"https://digimoncardgame.fandom.com{url}/Gallery"]
+        self.card_id = card_id
+        self.set_number = set_number
 
 
     def parse (self, response):
@@ -18,7 +20,7 @@ class CardArtSpider (scrapy.Spider):
 
             return result
 
-        result = dict()
+        # result = dict()
 
         eng_art_url = extract_img_url(response.xpath("//div[@id='gallery-0']//img/@src").getall())
         # jpn_art_url = extract_img_url(response.xpath("//div[@id='gallery-1']//img/@src").getall())
