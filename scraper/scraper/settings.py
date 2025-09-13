@@ -66,9 +66,9 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #    "scraper.pipelines.ScraperPipeline": 300,
 #}
 
-ITEM_PIPELINES = {"scrapy.pipelines.images.ImagesPipeline": 1}
+# ITEM_PIPELINES = {"scrapy.pipelines.images.ImagesPipeline": 1}
 
-IMAGES_STORE = "images"
+# IMAGES_STORE = "images"
 
 MEDIA_ALLOW_REDIRECTS = True
 

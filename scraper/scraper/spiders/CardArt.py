@@ -3,6 +3,12 @@ import scrapy
 class CardArtSpider (scrapy.Spider):
 
     name = "card_art"
+    custom_settings = {
+        "ITEM_PIPELINES" : {
+            "scrapy.pipelines.images.ImagesPipeline": 1,
+        },
+        "IMAGES_STORE": "images",
+    }
 
     def __init__(self, url=None, card_id = None, set_number = None, *args, **kwargs):
         super(CardArtSpider, self).__init__(*args, **kwargs)
@@ -38,6 +44,7 @@ class CardArtSpider (scrapy.Spider):
         if eng_art_url is not None:
             # result ["eng"] = list(zip (eng_art_url, eng_art_key))
             yield {"image_urls": eng_art_url, "id": self.card_id}
+
             
             # for image_url in eng_art_url:
             #     yield {"file_urls": [image_url]}
