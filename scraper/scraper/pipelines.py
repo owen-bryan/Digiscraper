@@ -7,6 +7,9 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
+from scrapy.pipelines.images import ImagesPipeline
+import os
+from urllib.parse import urlparse
 
 class ScraperPipeline:
     def process_item(self, item, spider):
@@ -23,3 +26,9 @@ class ScraperPipeline:
 #         else:
 #             self.ids_seen.add (adapter["card_id"])
 #             return item
+
+
+class CardArtPipeline (ImagesPipeline):
+    def file_path(self, request, response=None, info=None, *, item=None):
+        return f"{item['id']}/{os.path.basename (urlparse(request.url).path)}"
+        

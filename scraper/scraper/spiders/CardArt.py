@@ -5,7 +5,7 @@ class CardArtSpider (scrapy.Spider):
     name = "card_art"
     custom_settings = {
         "ITEM_PIPELINES" : {
-            "scrapy.pipelines.images.ImagesPipeline": 1,
+            "scraper.pipelines.CardArtPipeline": 1,
         },
         "IMAGES_STORE": "images",
     }
