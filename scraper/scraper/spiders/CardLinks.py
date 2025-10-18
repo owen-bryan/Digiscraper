@@ -1,3 +1,5 @@
+import re
+
 import scrapy
 class CardLinksSpider(scrapy.Spider):
     
@@ -5,6 +7,12 @@ class CardLinksSpider(scrapy.Spider):
     # allowed_domains = ["digimoncardgame.fandom.com"]
     # start_urls = ["https://digimoncardgame.fandom.com/wiki/Booster_Packs"]
     
+    custom_settings = {
+        "ITEM_PIPELINES" : {
+            "scraper.pipelines.CardLinksPipeline": 1,
+        },
+    }
+
     def __init__(self, url=None, set_name = None, set_id= None, *args, **kwargs):
         super(CardLinksSpider, self).__init__(*args, **kwargs)
         self.start_urls = [f"https://digimoncardgame.fandom.com{url}"]
@@ -22,10 +30,12 @@ class CardLinksSpider(scrapy.Spider):
         for link in response.css(".cardlist")[0].xpath(".//tbody//tr/th/a"):
             url = link.xpath("@href").extract_first().strip()
             card_name = link.xpath ("text()").extract_first().strip()
-
+            card_id = re.findall (r"[A-Z]+\d+-\d*", card_name)[-1]
+            # self.log ("{} card id".format(card_id))
             self.log ("Found card {} at {}".format(card_name, url))
 
             yield {
+                "card_id" : card_id,
                 "card_name": card_name,
                 "link" : url,
                 "set_name": self.set_name,

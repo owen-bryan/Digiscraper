@@ -15,20 +15,20 @@ class ScraperPipeline:
     def process_item(self, item, spider):
         return item
 
-# class DuplicateCardPipeline :
-#     def __init__(self):
-#         self.ids_seen = set()
-
-#     def process_item (self, item, spider):
-#         adapter = ItemAdapter (item)
-#         if adapter ["card_id"] in self.ids_seen:
-#             raise DropItem (f"Card ID already seen : {adapter['card_id']}")
-#         else:
-#             self.ids_seen.add (adapter["card_id"])
-#             return item
-
 
 class CardArtPipeline (ImagesPipeline):
     def file_path(self, request, response=None, info=None, *, item=None):
         return f"{item['id']}/{os.path.basename (urlparse(request.url).path)}"
         
+class CardLinksPipeline : 
+
+    def __init__(self):
+        self.links = set()
+
+    def process_item (self, item, spider):
+        adapter = ItemAdapter (item)
+        if adapter["link"] in self.links:
+            raise DropItem
+        else:
+            self.links.add(adapter ["link"])
+            return item
