@@ -18,7 +18,7 @@ class ScraperPipeline:
 
 class CardArtPipeline (ImagesPipeline):
     def file_path(self, request, response=None, info=None, *, item=None):
-        return f"{item['id']}/{os.path.basename (urlparse(request.url).path)}"
+        return f"{item["set_number"]}/{item['id']}/{os.path.basename (urlparse(request.url).path)}"
         
 class CardLinksPipeline : 
 

@@ -1,6 +1,6 @@
 venv
 launch.json
-*/images
+
 
 *.json
 *__pycache__
@@ -10,3 +10,5 @@ card_links/*.json
 card_links
 card
 set_links
+*images
+.vscode

@@ -43,7 +43,7 @@ class CardArtSpider (scrapy.Spider):
 
         if eng_art_url is not None:
             # result ["eng"] = list(zip (eng_art_url, eng_art_key))
-            yield {"image_urls": eng_art_url, "id": self.card_id}
+            yield {"image_urls": eng_art_url, "id": self.card_id, "set_number": self.set_number}
 
             
             # for image_url in eng_art_url:
